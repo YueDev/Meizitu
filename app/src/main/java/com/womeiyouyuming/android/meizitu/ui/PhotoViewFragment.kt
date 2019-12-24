@@ -8,22 +8,18 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
-import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.ViewCompat
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.target.Target
-
 import com.womeiyouyuming.android.meizitu.R
 import kotlinx.android.synthetic.main.fragment_photo_view.*
 
@@ -72,6 +68,12 @@ class PhotoViewFragment : Fragment() {
     private fun savePhoto(url: String) {
 
 
+        //得到uri，之后就创建Bitmap对象是利用IO流往uri里写数据，要在IO线程
+        //API29以上设置IS_PENDING状态为1
+        //API28以下，需要请求外部存储权限
+
+
+        //api28以下，动态请求外部存储权限
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
 
             try {
@@ -87,9 +89,8 @@ class PhotoViewFragment : Fragment() {
         }
 
 
-        //得到uri，之后就创建Bitmap对象是利用IO流往uri里写数据，要在IO线程
-        //API29以上设置IS_PENDING状态为1
-        //TODO:API28以下，需要请求外部存储权限，这里没有写
+
+
 
         val imageName = url.substringAfterLast("/")
 
@@ -132,6 +133,9 @@ class PhotoViewFragment : Fragment() {
         }
 
     }
+
+
+    
 
 
     private fun loadPhoto(url: String) {
