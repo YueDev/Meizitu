@@ -1,0 +1,2 @@
+rootProject.name='Meizitu'
+include ':app'
