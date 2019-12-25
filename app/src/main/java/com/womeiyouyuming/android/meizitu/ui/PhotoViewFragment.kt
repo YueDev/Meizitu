@@ -50,6 +50,9 @@ class PhotoViewFragment : Fragment() {
 
         photo_view.setOnClickListener {
 
+
+            //沉浸模式
+
             val visibility = requireActivity().window.decorView.systemUiVisibility
 
             if (visibility and View.SYSTEM_UI_FLAG_IMMERSIVE == 0) {
