@@ -1,19 +1,23 @@
 package com.womeiyouyuming.android.meizitu.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.womeiyouyuming.android.meizitu.R
 import com.womeiyouyuming.android.meizitu.adapter.PhotoListAdapter
 import com.womeiyouyuming.android.meizitu.network.NetworkStatus
 import com.womeiyouyuming.android.meizitu.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.fragment_photo_list.*
+import kotlinx.android.synthetic.main.fragment_photo_list.view.*
 
 
 /**
@@ -32,6 +36,20 @@ class PhotoListFragment : Fragment() {
         setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_photo_list, container, false)
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        //activity为了响应沉浸模式而设置了全屏显示，所以用不到沉浸模式的fragment就需要整体向下移动，给layout设置内部上边距
+        //获取状态栏高度，layout内部上边距 = actionbar高度 + 状态栏高度
+
+        val id = resources.getIdentifier("status_bar_height", "dimen","android")
+        val statusBarSize = resources.getDimension(id)
+        val padding = statusBarSize.toInt() + layout.paddingTop
+
+        layout.setPadding(0, padding, 0, 0)
+    }
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

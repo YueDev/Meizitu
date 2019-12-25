@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
+import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -21,6 +22,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.womeiyouyuming.android.meizitu.R
+import kotlinx.android.synthetic.main.fragment_photo_list.*
 import kotlinx.android.synthetic.main.fragment_photo_view.*
 
 /**
@@ -30,16 +32,21 @@ class PhotoViewFragment : Fragment() {
 
     private var bitmap: Bitmap? = null
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_photo_view, container, false)
     }
 
+
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
 
         //图片加载成功前禁止点击saveImage按钮
         saveImage.isEnabled = false
@@ -48,38 +55,19 @@ class PhotoViewFragment : Fragment() {
         loadPhoto(url)
 
 
-        photo_view.setOnClickListener {
 
+
+        photo_view.setOnClickListener {
 
             //沉浸模式
 
-            val visibility = requireActivity().window.decorView.systemUiVisibility
+            if (requireActivity().window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_IMMERSIVE == 0) {
 
-            if (visibility and View.SYSTEM_UI_FLAG_IMMERSIVE == 0) {
-
-                refreshImage.visibility = View.GONE
-                saveImage.visibility = View.GONE
-                requireActivity().window.decorView.systemUiVisibility =
-                    (View.SYSTEM_UI_FLAG_IMMERSIVE
-                            or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            or View.SYSTEM_UI_FLAG_FULLSCREEN)
-
-
+                enableFullScreen()
             } else {
-
-                requireActivity().window.decorView.systemUiVisibility =
-                    (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
-
-                refreshImage.visibility = View.VISIBLE
-                saveImage.visibility = View.VISIBLE
-
-
+                disableFullscreen()
             }
+
 
 
         }
@@ -96,6 +84,31 @@ class PhotoViewFragment : Fragment() {
             savePhoto(url)
         }
 
+    }
+
+
+
+    override fun onStop() {
+        super.onStop()
+        disableFullscreen()
+    }
+
+
+    //开启全屏显示(沉浸模式) 位操作
+
+    private fun enableFullScreen() {
+        requireActivity().window.decorView.systemUiVisibility =
+            requireActivity().window.decorView.systemUiVisibility or (View.SYSTEM_UI_FLAG_IMMERSIVE
+                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_FULLSCREEN)
+    }
+
+    //退出全屏显示
+    private fun disableFullscreen() {
+        requireActivity().window.decorView.systemUiVisibility =
+            requireActivity().window.decorView.systemUiVisibility and (View.SYSTEM_UI_FLAG_IMMERSIVE
+                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_FULLSCREEN).inv()
     }
 
 
