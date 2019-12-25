@@ -47,6 +47,40 @@ class PhotoViewFragment : Fragment() {
         val url = requireArguments().get("url").toString()
         loadPhoto(url)
 
+
+        photo_view.setOnClickListener {
+
+            val visibility = requireActivity().window.decorView.systemUiVisibility
+
+            if (visibility and View.SYSTEM_UI_FLAG_IMMERSIVE == 0) {
+
+                refreshImage.visibility = View.GONE
+                saveImage.visibility = View.GONE
+                requireActivity().window.decorView.systemUiVisibility =
+                    (View.SYSTEM_UI_FLAG_IMMERSIVE
+                            or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            or View.SYSTEM_UI_FLAG_FULLSCREEN)
+
+
+            } else {
+
+                requireActivity().window.decorView.systemUiVisibility =
+                    (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+
+                refreshImage.visibility = View.VISIBLE
+                saveImage.visibility = View.VISIBLE
+
+
+            }
+
+
+        }
+
         //刷新按钮
         refreshImage.setOnClickListener {
             ViewCompat.animate(it).rotation(360f).withEndAction {
@@ -77,19 +111,23 @@ class PhotoViewFragment : Fragment() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
 
             try {
-                val permission = ActivityCompat.checkSelfPermission(requireActivity(), "android.permission.WRITE_EXTERNAL_STORAGE")
+                val permission = ActivityCompat.checkSelfPermission(
+                    requireActivity(),
+                    "android.permission.WRITE_EXTERNAL_STORAGE"
+                )
 
                 if (permission != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+                    ActivityCompat.requestPermissions(
+                        requireActivity(),
+                        arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                        1
+                    )
                 }
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), "获取外部存储权限错误", Toast.LENGTH_SHORT).show()
             }
 
         }
-
-
-
 
 
         val imageName = url.substringAfterLast("/")
@@ -133,9 +171,6 @@ class PhotoViewFragment : Fragment() {
         }
 
     }
-
-
-    
 
 
     private fun loadPhoto(url: String) {
