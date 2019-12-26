@@ -8,13 +8,13 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
-import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -22,7 +22,6 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.womeiyouyuming.android.meizitu.R
-import kotlinx.android.synthetic.main.fragment_photo_list.*
 import kotlinx.android.synthetic.main.fragment_photo_view.*
 
 /**
@@ -41,7 +40,6 @@ class PhotoViewFragment : Fragment() {
 
         return inflater.inflate(R.layout.fragment_photo_view, container, false)
     }
-
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -69,7 +67,6 @@ class PhotoViewFragment : Fragment() {
             }
 
 
-
         }
 
         //刷新按钮
@@ -85,7 +82,6 @@ class PhotoViewFragment : Fragment() {
         }
 
     }
-
 
 
     override fun onStop() {
@@ -121,9 +117,8 @@ class PhotoViewFragment : Fragment() {
         //得到uri，之后就创建Bitmap对象是利用IO流往uri里写数据，要在IO线程
         //API29以上设置IS_PENDING状态为1
         //API28以下，需要请求外部存储权限
-
-
         //api28以下，动态请求外部存储权限
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
 
             try {
@@ -147,27 +142,51 @@ class PhotoViewFragment : Fragment() {
 
 
         val imageName = url.substringAfterLast("/")
+        val imageType = "image/jpg"
+
+        val resolver = requireActivity().applicationContext.contentResolver
+        val externalUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+
+        //图片查重
+        val projection = arrayOf(
+            MediaStore.Images.Media.DISPLAY_NAME,
+            MediaStore.Images.Media.MIME_TYPE
+        )
+
+        val selection =
+            "${MediaStore.Images.Media.DISPLAY_NAME} = ? AND ${MediaStore.Images.Media.MIME_TYPE} = ?"
+
+        val selectionArgs = arrayOf(imageName, imageType)
+
+
+        resolver.query(externalUri, projection, selection, selectionArgs, null)?.use {
+            if (it.count > 0) {
+                Toast.makeText(requireContext(), "图片已存在！", Toast.LENGTH_SHORT).show()
+                return
+            } else {
+                Log.d("YUEDEV", it.count.toString())
+            }
+        } ?: return
+
 
         //API29以上，设置IS_PENDING状态为1，这样其他应用就不会处理这张图片
         val values = ContentValues().apply {
-            put(MediaStore.Images.Media.TITLE, imageName)
             put(MediaStore.Images.Media.DISPLAY_NAME, imageName)
-            put(MediaStore.Images.Media.MIME_TYPE, "image/jpg")
-            put(MediaStore.Images.Media.DESCRIPTION, url)
+            put(MediaStore.Images.Media.MIME_TYPE, imageType)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 put(MediaStore.Images.Media.IS_PENDING, 1)
             }
-
         }
 
-        val resolver = requireActivity().applicationContext.contentResolver
-        val external = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+
+
+
 
 
 
         try {
 
-            val insertUri = resolver.insert(external, values) ?: return
+            val insertUri = resolver.insert(externalUri, values) ?: return
 
             resolver.openOutputStream(insertUri)?.use {
                 bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, it)
@@ -232,7 +251,8 @@ class PhotoViewFragment : Fragment() {
                     target: Target<Drawable>?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    Toast.makeText(requireContext(), "加载失败，请点击右下方刷新按钮", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "加载失败，请点击右下方刷新按钮", Toast.LENGTH_SHORT)
+                        .show()
                     return false
                 }
 
