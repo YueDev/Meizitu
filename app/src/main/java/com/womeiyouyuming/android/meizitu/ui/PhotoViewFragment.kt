@@ -32,18 +32,27 @@ class PhotoViewFragment : Fragment() {
 
     private var bitmap: Bitmap? = null
 
+    private var isRestart = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-
         //设置actionbar渐变
-        (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(resources.getDrawable(R.drawable.action_bar_gradient, null))
+       (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(resources.getDrawable(R.drawable.action_bar_gradient, null))
 
 
         return inflater.inflate(R.layout.fragment_photo_view, container, false)
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        if (isRestart) {
+            (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(resources.getDrawable(R.drawable.action_bar_gradient, null))
+
+        }
     }
 
 
@@ -64,15 +73,15 @@ class PhotoViewFragment : Fragment() {
 
             //沉浸模式
 
-            if (requireActivity().window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_IMMERSIVE == 0) {
+            if (requireActivity().window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0) {
 
                 enableFullScreen()
             } else {
                 disableFullscreen()
             }
 
-
         }
+
 
         //刷新按钮
         refreshImage.setOnClickListener {
@@ -81,20 +90,33 @@ class PhotoViewFragment : Fragment() {
             }
             loadPhoto(url)
         }
+
         //保存图片按钮
         saveImage.setOnClickListener {
             savePhoto(url)
         }
 
+        requireActivity().window.decorView.setOnSystemUiVisibilityChangeListener { systemUiVisibility ->
+            val height = bottom_bar.height.toFloat()
+            if (systemUiVisibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0 ) {
+                ViewCompat.animate(bottom_bar).translationY(0f)
+            } else {
+                ViewCompat.animate(bottom_bar).translationY(height)
+            }
+        }
+
     }
 
 
-    override fun onStop() {
+
+    override fun onStop(){
         super.onStop()
         (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(resources.getDrawable(R.color.colorPrimary, null))
         disableFullscreen()
-
+        isRestart = true
     }
+
+
 
 
     //开启全屏显示(沉浸模式) 位操作
