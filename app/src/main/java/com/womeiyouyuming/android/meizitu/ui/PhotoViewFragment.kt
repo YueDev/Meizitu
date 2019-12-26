@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
@@ -37,6 +38,10 @@ class PhotoViewFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+
+        //设置actionbar渐变
+        (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(resources.getDrawable(R.drawable.action_bar_gradient, null))
+
 
         return inflater.inflate(R.layout.fragment_photo_view, container, false)
     }
@@ -86,7 +91,9 @@ class PhotoViewFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
+        (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(resources.getDrawable(R.color.colorPrimary, null))
         disableFullscreen()
+
     }
 
 
@@ -116,7 +123,6 @@ class PhotoViewFragment : Fragment() {
 
         //得到uri，之后就创建Bitmap对象是利用IO流往uri里写数据，要在IO线程
         //API29以上设置IS_PENDING状态为1
-        //API28以下，需要请求外部存储权限
         //api28以下，动态请求外部存储权限
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
@@ -142,7 +148,7 @@ class PhotoViewFragment : Fragment() {
 
 
         val imageName = url.substringAfterLast("/")
-        val imageType = "image/jpg"
+        val imageType = "image/jpeg"
 
         val resolver = requireActivity().applicationContext.contentResolver
         val externalUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -159,14 +165,18 @@ class PhotoViewFragment : Fragment() {
         val selectionArgs = arrayOf(imageName, imageType)
 
 
-        resolver.query(externalUri, projection, selection, selectionArgs, null)?.use {
-            if (it.count > 0) {
-                Toast.makeText(requireContext(), "图片已存在！", Toast.LENGTH_SHORT).show()
-                return
-            } else {
-                Log.d("YUEDEV", it.count.toString())
+
+        try {
+            resolver.query(externalUri, projection, selection,  selectionArgs, null)?.use {
+                if (it.count > 0) {
+                    Toast.makeText(requireContext(), "图片已存在！", Toast.LENGTH_SHORT).show()
+                    return
+                }
             }
-        } ?: return
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "保存失败，请检查权限", Toast.LENGTH_SHORT).show()
+            return
+        }
 
 
         //API29以上，设置IS_PENDING状态为1，这样其他应用就不会处理这张图片
