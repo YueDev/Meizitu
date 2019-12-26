@@ -3,24 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_graph"
-    app:startDestination="@id/photoListFragment">
+    app:startDestination="@id/viewPagerFragment">
 
     <fragment
-        android:id="@+id/photoListFragment"
-        android:name="com.womeiyouyuming.android.meizitu.ui.PhotoListFragment"
+        android:id="@+id/photoViewFragment"
+        android:name="com.womeiyouyuming.android.meizitu.ui.PhotoViewFragment"
+        android:label="    "
+        tools:layout="@layout/fragment_photo_view"></fragment>
+    <fragment
+        android:id="@+id/viewPagerFragment"
+        android:name="com.womeiyouyuming.android.meizitu.ui.ViewPagerFragment"
         android:label="妹子图"
-        tools:layout="@layout/fragment_photo_list">
+        tools:layout="@layout/fragment_view_pager">
         <action
-            android:id="@+id/action_photoListFragment_to_photoViewFragment"
+            android:id="@+id/action_viewPagerFragment_to_photoViewFragment"
             app:destination="@id/photoViewFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
-    <fragment
-        android:id="@+id/photoViewFragment"
-        android:name="com.womeiyouyuming.android.meizitu.ui.PhotoViewFragment"
-        android:label="    "
-        tools:layout="@layout/fragment_photo_view"></fragment>
 </navigation>

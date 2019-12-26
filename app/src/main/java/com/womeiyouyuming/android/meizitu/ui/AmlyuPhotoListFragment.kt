@@ -1,29 +1,25 @@
 package com.womeiyouyuming.android.meizitu.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.womeiyouyuming.android.meizitu.R
 import com.womeiyouyuming.android.meizitu.adapter.PhotoListAdapter
 import com.womeiyouyuming.android.meizitu.network.NetworkStatus
 import com.womeiyouyuming.android.meizitu.viewmodel.MainViewModel
-import kotlinx.android.synthetic.main.fragment_photo_list.*
-import kotlinx.android.synthetic.main.fragment_photo_list.view.*
+import kotlinx.android.synthetic.main.fragment_amlyu_photo_list.*
 
 
 /**
  * A simple [Fragment] subclass.
  */
-class PhotoListFragment : Fragment() {
+class AmlyuPhotoListFragment : Fragment() {
 
     private val mainViewModel by activityViewModels<MainViewModel>()
 
@@ -34,20 +30,22 @@ class PhotoListFragment : Fragment() {
         // Inflate the layout for this fragment
 
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_photo_list, container, false)
+        return inflater.inflate(R.layout.fragment_amlyu_photo_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //activity为了响应沉浸模式而设置了全屏显示，所以用不到沉浸模式的fragment就需要整体向下移动，给layout设置内部上边距
-        //获取状态栏高度，layout内部上边距 = actionbar高度 + 状态栏高度
+//        activity为了响应沉浸模式而设置了全屏显示，所以用不到沉浸模式的fragment就需要整体向下移动，给layout设置内部上边距
+//        获取状态栏高度，layout内部上边距 = actionbar高度 + 状态栏高度
+//        这一块放到上一层布局viewpager中了
 
-        val id = resources.getIdentifier("status_bar_height", "dimen","android")
-        val statusBarSize = resources.getDimension(id)
-        val padding = statusBarSize.toInt() + layout.paddingTop
 
-        layout.setPadding(0, padding, 0, 0)
+//        val id = resources.getIdentifier("status_bar_height", "dimen","android")
+//        val statusBarSize = resources.getDimension(id)
+//        val padding = statusBarSize.toInt() + layout.paddingTop
+//
+//        layout.setPadding(0, padding, 0, 0)
     }
 
 
@@ -83,7 +81,7 @@ class PhotoListFragment : Fragment() {
         val gridLayoutManager = GridLayoutManager(requireContext(), 3)
         val photoAdapter = PhotoListAdapter {
             val bundle = bundleOf("url" to it)
-            findNavController().navigate(R.id.action_photoListFragment_to_photoViewFragment, bundle)
+            findNavController().navigate(R.id.action_viewPagerFragment_to_photoViewFragment, bundle)
         }
 
         photo_recycler_view.apply {
