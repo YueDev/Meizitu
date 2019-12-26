@@ -8,6 +8,7 @@ import com.womeiyouyuming.android.meizitu.ui.AmlyuPhotoListFragment
  * Created by Yue on 2019/12/26.
  */
 class PhotoListStateAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
+
     override fun getItemCount() = 1
 
     override fun createFragment(position: Int): Fragment {

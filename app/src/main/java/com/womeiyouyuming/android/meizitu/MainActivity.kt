@@ -27,8 +27,8 @@ class MainActivity : AppCompatActivity() {
                     or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
 
 
-        //设置ActionBar无阴影
-        supportActionBar?.elevation = 0.0f
+//        //设置ActionBar无阴影
+//        supportActionBar?.elevation = 0.0f
         //关联actionbar与navcontroller
         navController = findNavController(R.id.fragment)
         appBarConfiguration = AppBarConfiguration(navController.graph)
