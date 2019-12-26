@@ -21,7 +21,6 @@
     <fragment
         android:id="@+id/photoViewFragment"
         android:name="com.womeiyouyuming.android.meizitu.ui.PhotoViewFragment"
-        android:label="图片浏览"
-        tools:layout="@layout/fragment_photo_view" >
-    </fragment>
+        android:label="    "
+        tools:layout="@layout/fragment_photo_view"></fragment>
 </navigation>
