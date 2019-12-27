@@ -43,6 +43,7 @@ class PhotoViewFragment : Fragment() {
        (requireActivity() as AppCompatActivity).supportActionBar?.setBackgroundDrawable(resources.getDrawable(R.drawable.action_bar_gradient, null))
 
 
+
         return inflater.inflate(R.layout.fragment_photo_view, container, false)
     }
 

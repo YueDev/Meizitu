@@ -28,7 +28,6 @@ class AmlyuPhotoListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-
         setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_amlyu_photo_list, container, false)
     }
@@ -89,7 +88,7 @@ class AmlyuPhotoListFragment : Fragment() {
             adapter = photoAdapter
         }
 
-        mainViewModel.photoListLiveData.observe(viewLifecycleOwner, Observer {
+        mainViewModel.amlyuPhotoListLiveData.observe(viewLifecycleOwner, Observer {
             photoAdapter.submitList(it)
         })
     }
@@ -102,7 +101,7 @@ class AmlyuPhotoListFragment : Fragment() {
 //            flexWrap = FlexWrap.WRAP
 //        }
 
-        mainViewModel.networkStatusLiveData.observe(viewLifecycleOwner, Observer {
+        mainViewModel.amlyuNetworkStatusLiveData.observe(viewLifecycleOwner, Observer {
 
             //下拉刷新
             swipe_refresh.isRefreshing = it == NetworkStatus.LOADING

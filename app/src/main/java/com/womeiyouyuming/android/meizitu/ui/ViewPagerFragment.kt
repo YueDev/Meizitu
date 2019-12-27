@@ -21,7 +21,6 @@ class ViewPagerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        setHasOptionsMenu(true)
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_view_pager, container, false)
     }
@@ -32,7 +31,7 @@ class ViewPagerFragment : Fragment() {
         //activity为了响应沉浸模式而设置了全屏显示，所以用不到沉浸模式的fragment就需要整体向下移动，给layout设置内部上边距
         //获取状态栏高度，layout内部上边距 = actionbar高度 + 状态栏高度
 
-        val id = resources.getIdentifier("status_bar_height", "dimen","android")
+        val id = resources.getIdentifier("status_bar_height", "dimen", "android")
         val statusBarSize = resources.getDimension(id)
         val padding = statusBarSize.toInt() + layout.paddingTop
         layout.setPadding(0, padding, 0, 0)
@@ -45,7 +44,11 @@ class ViewPagerFragment : Fragment() {
         view_pager.adapter = adapter
 
         TabLayoutMediator(tab_layout, view_pager) { tab, position ->
-            tab.text = "喵领域"
+            tab.text = when (position) {
+                0 -> "喵领域"
+                1 -> "不羞涩"
+                else -> ""
+            }
         }.attach()
     }
 

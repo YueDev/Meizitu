@@ -17,6 +17,8 @@ class PhotoRepository {
 
     fun getPhotosFromAmlyuPaging(page: Int) = amlyuServices.getBeautyByPaging(page)
 
+    fun getPhotosFromBuxiusePading(page: Int) = buxiuseServices.getBeautyByPaging(page)
+
 
 
 

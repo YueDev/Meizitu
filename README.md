@@ -2,46 +2,36 @@
 
 ## 简介
 
-一个简单的看妹子的app，主要练习paging网络分页加载。
+一个简单的看妹子的app demo，自己学习android开发用的。
+主要用到下边几个特性
 
-内置多个数据源，但是还没有用到。以后会慢慢使用更多数据源。
+1. mvvm架构：Model <- Repository <- ViewModel <- Fragment，databinding绑定ViewHHolder，以及BindingAdapter
+2. paging分页库，DataSource加载网络数据进行分页，用retrofit进行网络请求，返回suspend用协程处理（写了suspeng函数还没用到）
+3. Android10的分区存储，Android10以上存储图片不需要权限，10以下需要存储权限
+4. 用FlexboxLayout实现瀑布流
+5. ViewPager2
+6. Jsop进行html解析，有了这个就能再找到很多妹子图库
+
 
 ## 预览
 
-<img src="./img/Screenshot_2019-12-24-10-56-53-16_39ca5382d959fcc1e205bdb869aa86aa.jpg" height="400">
+<img src="./img/1.jpg" height="400">
 
-<img src="./img/Screenshot_2019-12-24-10-57-02-98_39ca5382d959fcc1e205bdb869aa86aa.jpg" height="400">
+<img src="./img/2.jpg" height="400">
+
+<img src="./img/3.jpg" height="400">
+
+<img src="./img/4.jpg" width="400">
+
 
 
 ## 一些问题
 
-1. 沉浸模式 
+1. 沉浸模式：
+为了响应沉浸模式，整个Activity设置了全屏显示，样就需要在非沉浸的fragment里做布局的向下偏移，如果单独给沉浸模式的内容放到一个Activity里会简单很多，应该用Toolbar会简单一些
 
-为了响应沉浸模式，整个Activity设置了全屏显示
+2. 分区存储API28以下请求权限也的很乱，并且没有放到ViewModel里，也没有切线程（因为Glide缓存了图片所以存储的很快），以后会把存储图片和请求权限抽取到ViewModel里
 
-~~~
-        window.decorView.systemUiVisibility =
-            window.decorView.systemUiVisibility or (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
+3. 瀑布流数据多的时候，如果旋转屏幕，图片加载的会很慢，这个原因需要再查，应该和Glide有关。
 
-~~~
-
-这样就需要在非沉浸的fragment里做布局的向下偏移
-
-~~~
-        //activity为了响应沉浸模式而设置了全屏显示，所以用不到沉浸模式的fragment就需要整体向下移动，给layout设置内部上边距
-        //获取状态栏高度，layout内部上边距 = actionbar高度 + 状态栏高度
-
-        val id = resources.getIdentifier("status_bar_height", "dimen","android")
-        val statusBarSize = resources.getDimension(id)
-        val padding = statusBarSize.toInt() + layout.paddingTop
-
-        layout.setPadding(0, padding, 0, 0)
-~~~
-
-这样做很繁琐，如果单独给沉浸模式的内容放到一个Activity里会简单很多。
-
-2. actionbar的透明渐变效果，类似Google的看图界面，还没有做。
-
-
+4. PhotoListFragment可以抽取一个BasePhotoListFragment，并且RyclcerView的Adapte和item_layout也可以复用一个。
