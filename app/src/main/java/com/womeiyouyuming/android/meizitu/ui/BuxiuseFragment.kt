@@ -79,7 +79,7 @@ class BuxiuseFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem) =
         when (item.itemId) {
             R.id.item_refresh -> {
-                mainViewModel.refresBuxiuse()
+                mainViewModel.refreshBuxiuse()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -119,7 +119,7 @@ class BuxiuseFragment : Fragment() {
             //下拉刷新
             swipe_refresh.isRefreshing = it == NetworkStatus.LOADING
             swipe_refresh.setOnRefreshListener {
-                mainViewModel.refresBuxiuse()
+                mainViewModel.refreshBuxiuse()
             }
 
             //错误提示
