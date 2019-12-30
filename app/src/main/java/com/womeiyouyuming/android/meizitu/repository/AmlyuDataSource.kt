@@ -23,6 +23,8 @@ class AmlyuDataSource(private val photoRepository: PhotoRepository) :
     private val _networkStatus = MutableLiveData<NetworkStatus>()
     val networkStatus: LiveData<NetworkStatus> = _networkStatus
 
+    private var retry: (() -> Unit)? = null
+
 
     override fun loadInitial(
         params: LoadInitialParams<Int>,
@@ -30,11 +32,14 @@ class AmlyuDataSource(private val photoRepository: PhotoRepository) :
     ) {
 
         _networkStatus.postValue(NetworkStatus.LOADING)
-
-        photoRepository.getPhotosFromAmlyuPaging(1).enqueue(object :  Callback<ResponseBody>{
+        retry = null
+        photoRepository.getPhotosFromAmlyuPaging(1).enqueue(object : Callback<ResponseBody> {
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 _networkStatus.postValue(NetworkStatus.FAILED)
+                retry = {
+                    loadInitial(params, callback)
+                }
                 t.printStackTrace()
             }
 
@@ -51,22 +56,40 @@ class AmlyuDataSource(private val photoRepository: PhotoRepository) :
 
         _networkStatus.postValue(NetworkStatus.LOADING)
 
-        photoRepository.getPhotosFromAmlyuPaging(params.key).enqueue(object :  Callback<ResponseBody>{
+        retry = null
+        photoRepository.getPhotosFromAmlyuPaging(params.key)
+            .enqueue(object : Callback<ResponseBody> {
 
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                _networkStatus.postValue(NetworkStatus.FAILED)
-                t.printStackTrace()
-            }
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    _networkStatus.postValue(NetworkStatus.FAILED)
+                    retry = {
+                        loadAfter(params, callback)
+                    }
+                    t.printStackTrace()
+                }
 
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                val result = parseAmlyu(response.body()?.string())
-                _networkStatus.postValue(NetworkStatus.SUCCESS)
-                callback.onResult(result,  params.key + 1)
-            }
-        })
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
+                ) {
+                    val result = parseAmlyu(response.body()?.string())
+                    _networkStatus.postValue(NetworkStatus.SUCCESS)
+                    callback.onResult(result, params.key + 1)
+                }
+            })
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, Photo>) {
 
     }
+
+    fun retryFailed() {
+        val prevRetry = retry
+        retry = null
+        prevRetry?.let {
+            it()
+        }
+    }
+
+
 }

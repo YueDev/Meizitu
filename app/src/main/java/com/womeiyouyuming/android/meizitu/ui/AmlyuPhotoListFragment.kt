@@ -1,6 +1,8 @@
 package com.womeiyouyuming.android.meizitu.ui
 
+import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.core.os.bundleOf
@@ -9,11 +11,13 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.womeiyouyuming.android.meizitu.R
 import com.womeiyouyuming.android.meizitu.adapter.PhotoListAdapter
 import com.womeiyouyuming.android.meizitu.network.NetworkStatus
 import com.womeiyouyuming.android.meizitu.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.fragment_amlyu_photo_list.*
+import kotlinx.android.synthetic.main.fragment_view_pager.*
 
 
 /**
@@ -22,6 +26,7 @@ import kotlinx.android.synthetic.main.fragment_amlyu_photo_list.*
 class AmlyuPhotoListFragment : Fragment() {
 
     private val mainViewModel by activityViewModels<MainViewModel>()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -101,7 +106,14 @@ class AmlyuPhotoListFragment : Fragment() {
 //            flexWrap = FlexWrap.WRAP
 //        }
 
+        retry_button.setOnClickListener {
+            mainViewModel.retryAmlyu()
+        }
+
+
         mainViewModel.amlyuNetworkStatusLiveData.observe(viewLifecycleOwner, Observer {
+
+            retry_button.visibility = View.GONE
 
             //下拉刷新
             swipe_refresh.isRefreshing = it == NetworkStatus.LOADING
@@ -111,13 +123,14 @@ class AmlyuPhotoListFragment : Fragment() {
 
             //错误提示
             if (it == NetworkStatus.FAILED) {
-                Toast.makeText(requireContext(), "出现错误，请检查网络后下拉或者点右上角刷新", Toast.LENGTH_SHORT).show()
+                retry_button.visibility = View.VISIBLE
             }
-
         })
     }
 
 
 }
+
+
 
 

@@ -42,8 +42,6 @@ class BuxiuseFragment : Fragment() {
     }
 
 
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -67,7 +65,6 @@ class BuxiuseFragment : Fragment() {
         //下拉刷新
         initRefreshLayout()
     }
-
 
 
     //右上角菜单
@@ -114,7 +111,13 @@ class BuxiuseFragment : Fragment() {
     private fun initRefreshLayout() {
 
 
+        retry_button.setOnClickListener {
+            mainViewModel.retryBuxiuse()
+        }
+
         mainViewModel.buxiuseNetworkStatusLiveData.observe(viewLifecycleOwner, Observer {
+
+            retry_button.visibility = View.GONE
 
             //下拉刷新
             swipe_refresh.isRefreshing = it == NetworkStatus.LOADING
@@ -124,7 +127,8 @@ class BuxiuseFragment : Fragment() {
 
             //错误提示
             if (it == NetworkStatus.FAILED) {
-                Toast.makeText(requireContext(), "出现错误，请检查网络后下拉或者点右上角刷新", Toast.LENGTH_SHORT).show()
+                retry_button.visibility = View.VISIBLE
+
             }
 
         })

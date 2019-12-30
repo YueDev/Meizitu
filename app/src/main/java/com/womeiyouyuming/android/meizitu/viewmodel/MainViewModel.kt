@@ -35,8 +35,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         it.networkStatus
     }
 
-
-    //刷新Amlyu数据
+    //全部刷新Amlyu数据
     fun refreshAmlyu() {
         amlyuDataSourceFactory.source.value?.invalidate()
     }
@@ -44,6 +43,19 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun refreshBuxiuse() {
         buxiuseDataSourceFactory.source.value?.invalidate()
     }
+
+
+    //局部刷新数据
+
+    fun retryAmlyu() {
+        amlyuDataSourceFactory.source.value?.retryFailed()
+    }
+
+    fun retryBuxiuse() {
+        buxiuseDataSourceFactory.source.value?.retryFailed()
+    }
+
+
 
 
     //已在协程中处理IO线程读写并在主线程反馈结果，也可以把结果post给liveData，这样不用传lambda参数
