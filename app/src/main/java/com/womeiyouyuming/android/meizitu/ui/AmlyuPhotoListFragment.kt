@@ -88,6 +88,7 @@ class AmlyuPhotoListFragment : Fragment() {
             findNavController().navigate(R.id.action_viewPagerFragment_to_photoViewFragment, bundle)
         }
 
+
         photo_recycler_view.apply {
             layoutManager = gridLayoutManager
             adapter = photoAdapter
