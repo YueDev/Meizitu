@@ -11,6 +11,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.womeiyouyuming.android.meizitu.R
 import com.womeiyouyuming.android.meizitu.adapter.PhotoListAdapter
@@ -82,11 +84,15 @@ class AmlyuPhotoListFragment : Fragment() {
 
     private fun initRecyclerView() {
 
-        val gridLayoutManager = GridLayoutManager(requireContext(), 3)
-        val photoAdapter = PhotoListAdapter {
+        val gridLayoutManager = StaggeredGridLayoutManager(3, RecyclerView.VERTICAL)
+
+
+        val photoAdapter = PhotoListAdapter(itemClick = {
             val bundle = bundleOf("url" to it)
             findNavController().navigate(R.id.action_viewPagerFragment_to_photoViewFragment, bundle)
-        }
+        }, retry = {
+            mainViewModel.retryAmlyu()
+        })
 
 
         photo_recycler_view.apply {
@@ -96,6 +102,10 @@ class AmlyuPhotoListFragment : Fragment() {
 
         mainViewModel.amlyuPhotoListLiveData.observe(viewLifecycleOwner, Observer {
             photoAdapter.submitList(it)
+        })
+
+        mainViewModel.amlyuNetworkStatusLiveData.observe(viewLifecycleOwner, Observer {
+            photoAdapter.setNetworkStatus(it)
         })
     }
 
@@ -107,25 +117,17 @@ class AmlyuPhotoListFragment : Fragment() {
 //            flexWrap = FlexWrap.WRAP
 //        }
 
-        retry_button.setOnClickListener {
-            mainViewModel.retryAmlyu()
-        }
-
 
         mainViewModel.amlyuNetworkStatusLiveData.observe(viewLifecycleOwner, Observer {
 
-            retry_button.visibility = View.GONE
 
             //下拉刷新
-            swipe_refresh.isRefreshing = it == NetworkStatus.LOADING
+            swipe_refresh.isRefreshing = it == NetworkStatus.FIRST_LOADING
             swipe_refresh.setOnRefreshListener {
                 mainViewModel.refreshAmlyu()
             }
 
-            //错误提示
-            if (it == NetworkStatus.FAILED) {
-                retry_button.visibility = View.VISIBLE
-            }
+
         })
     }
 

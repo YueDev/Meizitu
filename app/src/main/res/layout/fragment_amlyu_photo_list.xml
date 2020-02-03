@@ -22,17 +22,5 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <Button
-        android:id="@+id/retry_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_margin="8dp"
-        android:backgroundTint="@color/colorPrimary"
-        android:text="出现错误，请检查网络后点击此按钮刷新"
-        android:textColor="@android:color/white"
-        android:visibility="gone"
-        tools:visibility="visible" />
-
 
 </FrameLayout>

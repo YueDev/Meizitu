@@ -17,6 +17,9 @@ import com.womeiyouyuming.android.meizitu.adapter.BuxiuseListAdapter
 import com.womeiyouyuming.android.meizitu.network.NetworkStatus
 import com.womeiyouyuming.android.meizitu.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.fragment_amlyu_photo_list.*
+import kotlinx.android.synthetic.main.fragment_amlyu_photo_list.photo_recycler_view
+import kotlinx.android.synthetic.main.fragment_amlyu_photo_list.swipe_refresh
+import kotlinx.android.synthetic.main.fragment_buxiuse.*
 
 
 class BuxiuseFragment : Fragment() {
@@ -111,13 +114,13 @@ class BuxiuseFragment : Fragment() {
     private fun initRefreshLayout() {
 
 
-        retry_button.setOnClickListener {
+        retryButton.setOnClickListener {
             mainViewModel.retryBuxiuse()
         }
 
         mainViewModel.buxiuseNetworkStatusLiveData.observe(viewLifecycleOwner, Observer {
 
-            retry_button.visibility = View.GONE
+            retryButton.visibility = View.GONE
 
             //下拉刷新
             swipe_refresh.isRefreshing = it == NetworkStatus.LOADING
@@ -127,7 +130,7 @@ class BuxiuseFragment : Fragment() {
 
             //错误提示
             if (it == NetworkStatus.FAILED) {
-                retry_button.visibility = View.VISIBLE
+                retryButton.visibility = View.VISIBLE
 
             }
 

@@ -1,11 +1,13 @@
 package com.womeiyouyuming.android.meizitu.adapter
 
+import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
 import com.womeiyouyuming.android.meizitu.R
+import com.womeiyouyuming.android.meizitu.network.NetworkStatus
 
 /**
  * Created by Yue on 2019/12/16.
@@ -24,6 +26,15 @@ fun getImgFromAmlyu(imageView: ImageView, url: String?) {
         .load(glideUrl)
         .error(R.drawable.ic_error_black_24dp)
         .into(imageView)
+}
+@BindingAdapter("app:bindNetworkStatusLoading")
+fun bindNetworkStatusLoading(view: View, networkStatus: NetworkStatus?) {
+    view.visibility = if (networkStatus == NetworkStatus.LOADING) View.VISIBLE else View.GONE
+}
+
+@BindingAdapter("app:bindNetworkStatusFailed")
+fun bindNetworkStatusFailed(view: View, networkStatus: NetworkStatus?) {
+    view.visibility = if (networkStatus == NetworkStatus.FAILED) View.VISIBLE else View.GONE
 }
 
 

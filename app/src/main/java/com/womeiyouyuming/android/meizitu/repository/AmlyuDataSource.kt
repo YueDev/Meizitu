@@ -31,8 +31,8 @@ class AmlyuDataSource(private val photoRepository: PhotoRepository) :
         callback: LoadInitialCallback<Int, Photo>
     ) {
 
-        _networkStatus.postValue(NetworkStatus.LOADING)
-        Thread.sleep(3000)
+        _networkStatus.postValue(NetworkStatus.FIRST_LOADING)
+
         retry = null
         photoRepository.getPhotosFromAmlyuPaging(1).enqueue(object : Callback<ResponseBody> {
 
@@ -56,7 +56,7 @@ class AmlyuDataSource(private val photoRepository: PhotoRepository) :
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, Photo>) {
 
         _networkStatus.postValue(NetworkStatus.LOADING)
-        Thread.sleep(3000)
+
 
         retry = null
         photoRepository.getPhotosFromAmlyuPaging(params.key)
