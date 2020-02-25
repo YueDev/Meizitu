@@ -43,7 +43,7 @@ fun getImgFromUrl(imageView: ImageView, url: String?) {
         .load(url)
         .diskCacheStrategy(DiskCacheStrategy.ALL)
         .centerCrop()
-        .placeholder(R.drawable.ic_launcher_foreground)
+        .placeholder(R.drawable.ic_placeholder)
         .error(R.drawable.ic_error_black_24dp)
         .into(imageView)
 }

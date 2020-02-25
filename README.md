@@ -36,4 +36,4 @@
 
 3. PhotoListFragment可以抽取一个BasePhotoListFragment，并且RyclcerView的Adapte和item_layout也可以复用一个。
 
-4. Android Studio版本是 3.6 RC2，3.5编译不过的可以下个3.6试试。
+4. Android Studio版本是 3.6，3.5编译不过的可以下个3.6试试。
